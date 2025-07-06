@@ -1,0 +1,18 @@
+[package]
+name = "web-capture"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1.0.98"
+chrono = "0.4.41"
+headless_chrome = "1.0.17"
+prost = "0.13"
+thiserror = "2.0.12"
+tokio = { version = "1.46.1", features = ["rt-multi-thread", "macros", "signal"] }
+tonic = "0.13.1"
+tracing = "0.1.41"
+tracing-subscriber = "0.3.19"
+
+[build-dependencies]
+tonic-build = "0.13.1"
