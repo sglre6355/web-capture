@@ -12,6 +12,6 @@ RUN --mount=type=bind,source=src,target=src \
     cp /app/target/release/web-capture /app/web-capture
 
 FROM alpine:latest
-RUN apk add --no-cache chromium
+RUN apk add --no-cache chromium font-noto-cjk
 COPY --from=build-env /app/web-capture /
 CMD ["/web-capture"]
