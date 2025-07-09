@@ -56,6 +56,11 @@ impl BrowserService {
             .wait_for_element(element_selector)
             .map_err(|e| AppError::ElementNotFound(e.to_string()))?;
 
+        // Scroll element into view to ensure it's properly positioned
+        element
+            .scroll_into_view()
+            .map_err(|e| AppError::ElementNotFound(e.to_string()))?;
+
         let box_model = element
             .get_box_model()
             .map_err(|e| AppError::ElementNotFound(e.to_string()))?;
