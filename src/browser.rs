@@ -41,6 +41,8 @@ impl BrowserService {
     ) -> Result<Vec<u8>, AppError> {
         let tab = self
             .browser
+            .new_context()
+            .map_err(|e| AppError::Browser(e.to_string()))?
             .new_tab()
             .map_err(|e| AppError::Browser(e.to_string()))?;
 
@@ -68,6 +70,9 @@ impl BrowserService {
         let image_data = tab
             .capture_screenshot(format, None, Some(box_model.border_viewport()), true)
             .map_err(|e| AppError::Screenshot(e.to_string()))?;
+
+        tab.close_target()
+            .map_err(|e| AppError::Browser(e.to_string()))?;
 
         Ok(image_data)
     }
