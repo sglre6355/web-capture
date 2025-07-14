@@ -29,11 +29,22 @@ message Interaction {
   int32 wait_ms = 4; // For WAIT interactions or general timeout
 }
 
+message Cookie {
+  string name = 1;
+  string value = 2;
+  string domain = 3;
+  optional string path = 4;
+  optional bool secure = 5;
+  optional bool http_only = 6;
+  optional int64 expires = 7; // Unix timestamp, 0 for session cookies
+}
+
 message CaptureElementRequest {
   string url = 1;
   string element_selector = 2;
   ImageFormat image_format = 3;
   repeated Interaction interactions = 4;
+  repeated Cookie cookies = 5;
 }
 
 message CaptureElementResponse {

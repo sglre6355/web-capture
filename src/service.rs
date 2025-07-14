@@ -36,6 +36,11 @@ impl WebCaptureServiceTrait for WebCaptureService {
         let url = &req.url;
         let element_selector = &req.element_selector;
         let image_format = req.image_format();
+        let cookies = req
+            .cookies
+            .into_iter()
+            .map(|cookie| cookie.into())
+            .collect();
 
         let image_data = self
             .browser_service
@@ -44,6 +49,7 @@ impl WebCaptureServiceTrait for WebCaptureService {
                 element_selector,
                 image_format.into(),
                 &req.interactions,
+                cookies,
             )
             .await
             .map_err(Status::from)?;

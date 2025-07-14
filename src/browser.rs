@@ -1,7 +1,8 @@
 use std::{sync::Arc, time::Duration};
 
 use headless_chrome::{
-    Browser, LaunchOptionsBuilder, protocol::cdp::Page::CaptureScreenshotFormatOption,
+    Browser, LaunchOptionsBuilder,
+    protocol::cdp::{Network::CookieParam, Page::CaptureScreenshotFormatOption},
 };
 
 use crate::{
@@ -38,12 +39,16 @@ impl BrowserService {
         element_selector: &str,
         format: CaptureScreenshotFormatOption,
         interactions: &[Interaction],
+        cookies: Vec<CookieParam>,
     ) -> Result<Vec<u8>, AppError> {
         let tab = self
             .browser
             .new_context()
             .map_err(|e| AppError::Browser(e.to_string()))?
             .new_tab()
+            .map_err(|e| AppError::Browser(e.to_string()))?;
+
+        tab.set_cookies(cookies)
             .map_err(|e| AppError::Browser(e.to_string()))?;
 
         tab.navigate_to(url)

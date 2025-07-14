@@ -13,9 +13,32 @@ use service::WebCaptureService;
 use web_capture::web_capture_service_server::WebCaptureServiceServer;
 
 pub mod web_capture {
-    use headless_chrome::protocol::cdp::Page::CaptureScreenshotFormatOption;
+    use headless_chrome::protocol::cdp::{
+        Network::CookieParam, Page::CaptureScreenshotFormatOption,
+    };
 
     tonic::include_proto!("web_capture.v1");
+
+    impl From<Cookie> for CookieParam {
+        fn from(proto_format: Cookie) -> Self {
+            CookieParam {
+                name: proto_format.name,
+                value: proto_format.value,
+                url: None,
+                domain: Some(proto_format.domain),
+                path: proto_format.path,
+                secure: proto_format.secure,
+                http_only: proto_format.http_only,
+                same_site: None,
+                expires: proto_format.expires.map(|i| i as f64),
+                priority: None,
+                same_party: None,
+                source_scheme: None,
+                source_port: None,
+                partition_key: None,
+            }
+        }
+    }
 
     impl From<ImageFormat> for CaptureScreenshotFormatOption {
         fn from(proto_format: ImageFormat) -> Self {
