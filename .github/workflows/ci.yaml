@@ -36,6 +36,8 @@ jobs:
         uses: Swatinem/rust-cache@v2
       - name: Install protoc
         uses: arduino/setup-protoc@v3
+        with:
+          repo-token: ${{ github.token }}
       - name: Check linting
         run: cargo clippy --workspace --all-targets --all-features -- -D warnings
       - name: Check formatting
@@ -51,6 +53,8 @@ jobs:
         uses: Swatinem/rust-cache@v2
       - name: Install protoc
         uses: arduino/setup-protoc@v3
+        with:
+          repo-token: ${{ github.token }}
       - name: Run tests
         run: cargo test --workspace --all-features --all-targets
   build-container-image:
