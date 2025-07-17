@@ -68,12 +68,37 @@ impl BrowserService {
             .scroll_into_view()
             .map_err(|e| AppError::ElementNotFound(e.to_string()))?;
 
-        let box_model = element
-            .get_box_model()
-            .map_err(|e| AppError::ElementNotFound(e.to_string()))?;
+        let mut viewport = None;
+
+        for _ in 0..10 {
+            // Scroll element into view to ensure it's properly positioned
+            element
+                .scroll_into_view()
+                .map_err(|e| AppError::ElementNotFound(e.to_string()))?;
+
+            let current = element
+                .get_box_model()
+                .map_err(|e| AppError::ElementNotFound(e.to_string()))?
+                .border_viewport();
+
+            if let Some(previous) = &viewport
+                && current == *previous
+            {
+                break;
+            }
+
+            viewport = Some(current);
+        }
 
         let image_data = tab
-            .capture_screenshot(format, None, Some(box_model.border_viewport()), true)
+            .capture_screenshot(
+                format,
+                None,
+                Some(viewport.ok_or_else(|| {
+                    AppError::ElementNotFound("Element postion never stabilized".to_string())
+                })?),
+                true,
+            )
             .map_err(|e| AppError::Screenshot(e.to_string()))?;
 
         tab.close_target()
